@@ -328,6 +328,7 @@ public final class MainInterface extends JFrame {
 
     private void gridPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridPanelMousePressed
         //graphics.drawHexagonAtMouse();
+        
         hexNode.draw();
         gridPanel.repaint();
     }//GEN-LAST:event_gridPanelMousePressed

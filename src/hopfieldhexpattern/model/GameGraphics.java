@@ -107,9 +107,9 @@ public class GameGraphics {
 
     }//end drawDickButt()
 
-    public void drawHexagonAtMouse() {
+    public void drawHexagonAtMouse(Point mousePoint, Color color) {
         
-        Point mousePoint = graphicsPanel.getMousePosition();
+        //Point mousePoint = mousePoint;
 
         if (mousePoint != null) {
             HexGridCell cellMetrics = new HexGridCell(Parameters.getPixelSize() / 2);
@@ -122,9 +122,9 @@ public class GameGraphics {
 
             cellMetrics.computeCorners(mCornersX, mCornersY);
 
-            offScreenImageGraphics.setColor(Color.RED);
+            offScreenImageGraphics.setColor(color);
             offScreenImageGraphics.fillPolygon(mCornersX, mCornersY, 6);
-            offScreenImageGraphics.setColor(Color.RED);
+            offScreenImageGraphics.setColor(color);
             offScreenImageGraphics.drawPolygon(mCornersX, mCornersY, 6);
         }//end if
 
