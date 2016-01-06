@@ -68,7 +68,7 @@ public class AboutDialog extends javax.swing.JDialog {
         setResizable(false);
 
         mLabelApplicationName.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
-        mLabelApplicationName.setText("Pixel Life");
+        mLabelApplicationName.setText("Hopfield Hex Pattern");
 
         mLabelVersionNumber.setText("version 1.0");
 
@@ -78,7 +78,7 @@ public class AboutDialog extends javax.swing.JDialog {
         mLabelAuthorName.setText("<html><body>Copyright (C) 2015 Jeremy Williamson</html></body>");
 
         mLabelAuthorURL.setForeground(java.awt.Color.blue);
-        mLabelAuthorURL.setText("https://github.com/quartermeat/PixelLife");
+        mLabelAuthorURL.setText("https://github.com/quartermeat/HopfieldHexPattern");
         mLabelAuthorURL.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 mLabelAuthorURLMouseClicked(evt);
@@ -109,7 +109,7 @@ public class AboutDialog extends javax.swing.JDialog {
                             .addComponent(mLabelVersionDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(mLabelVersionNumber, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(mLabelApplicationName, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 37, Short.MAX_VALUE)))
+                        .addGap(0, 3, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

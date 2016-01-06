@@ -23,7 +23,6 @@ public class GameLogic {
     
     public int getAllowableOrganisms(){
         return allowableOrganisms;
-    }
-    
+    }    
     
 }//end GameLogic
