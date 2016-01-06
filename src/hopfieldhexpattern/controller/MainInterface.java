@@ -26,35 +26,41 @@ package hopfieldhexpattern.controller;
 
 import hopfieldhexpattern.model.*;
 import hopfieldhexpattern.auxViews.*;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public final class MainInterface extends JFrame {
 
+    //finals
     private final AboutDialog mAboutDialog;
     private final OptionsDialog mOptionsDialog;
 
     private final GameGraphics graphics;
     private final Thread thread;
+
+    private final HexNode[][] hexNodeGrid;
     
-    private HexNode hexNode;
+    //non-final members
+    private boolean[][] booleanGrid;
 
     //MainInterface constructor
     public MainInterface() {
-               
+
         mAboutDialog = new AboutDialog(this, true);
         mOptionsDialog = new OptionsDialog(this, true);
 
         graphics = new GameGraphics(this);
         thread = new Thread(new MainThread(this));
-        
-        hexNode = new HexNode(this);
-        
+
+        hexNodeGrid = new HexNode[Parameters.getGridSize()][Parameters.getGridSize()];
+
         initComponents();
-        
+
         setLocationRelativeTo(null);
 
         ImageIcon img = new ImageIcon("icon.png");
@@ -108,17 +114,24 @@ public final class MainInterface extends JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new MainInterface().setVisible(true);
-            
         });
-    }
+    }//end main
 
     public void populationDeadMessage() {
         JOptionPane.showMessageDialog(this, "No cells are alive.", "Game Over!", JOptionPane.INFORMATION_MESSAGE);
-    }
+    }//end populationDeadMessage()
 
     public GameGraphics getGameGraphics() {
         return graphics;
-    }
+    }//end getGameGraphics()
+    
+    public void setBooleanGrid(){
+        for(int i = 0; i < Parameters.getGridSize();i++){
+            for(int j = 0; j < Parameters.getGridSize(); j++){
+                booleanGrid[i][j] = hexNodeGrid[i][j].isDrawn();
+            }//end for
+        }//end for
+    }//end setBooleanGrid
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -327,15 +340,45 @@ public final class MainInterface extends JFrame {
     }//GEN-LAST:event_menuAboutActionPerformed
 
     private void gridPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridPanelMousePressed
-        //graphics.drawHexagonAtMouse();
-        
-        hexNode.draw();
-        gridPanel.repaint();
+
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            Point mousePoint = gridPanel.getMousePosition();
+
+            try {
+                HexNode newHexNode = new HexNode(this, mousePoint);
+                if (hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] == null) {
+                    hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] = newHexNode;
+
+                    hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()].draw();
+                    gridPanel.repaint();
+
+                }//end if
+            } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+                //TODO: TRY TO STOP THIS FROM HAPPENING
+            }//end try/catch
+        }//end if
+
     }//GEN-LAST:event_gridPanelMousePressed
 
     private void gridPanelMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridPanelMouseDragged
-        hexNode.draw();
-        gridPanel.repaint();
+
+        if (SwingUtilities.isLeftMouseButton(evt)) {
+            Point mousePoint = gridPanel.getMousePosition();
+
+            try {
+                HexNode newHexNode = new HexNode(this, mousePoint);
+                if (hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] == null) {
+                    hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] = newHexNode;
+
+                    hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()].draw();
+                    gridPanel.repaint();
+
+                }//end if
+            } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
+                //TODO: TRY TO STOP THIS FROM HAPPENING
+            }//end try/catch
+        }//end if
+
     }//GEN-LAST:event_gridPanelMouseDragged
 
     private void gridPanelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gridPanelMouseReleased

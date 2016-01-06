@@ -23,7 +23,6 @@ public class GameGraphics {
     //graphics variables
     private final Graphics offScreenImageGraphics;
     private final BufferedImage offScreenImage;
-    private final GridPanel graphicsPanel;
 
     //private Thread thread;
     //private boolean isRunning;
@@ -32,9 +31,7 @@ public class GameGraphics {
 
     public GameGraphics(MainInterface window) {
         offScreenImage = new BufferedImage((int) Math.floor(Parameters.getImageSizeX() + 1), (int) Math.floor(Parameters.getImageSizeY() + 1), BufferedImage.TYPE_INT_RGB);
-        offScreenImageGraphics = offScreenImage.getGraphics();
-        graphicsPanel = (GridPanel) window.gridPanel;
-        
+        offScreenImageGraphics = offScreenImage.getGraphics();       
 
     }//end GameGraphics
 
