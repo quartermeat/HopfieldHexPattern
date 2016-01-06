@@ -1,27 +1,5 @@
 /*
- *   GameOfLife - An implementation of John H. Conway's cellular automaton.
- *   Copyright (C) 2015  Philip J. Underwood (philjunderwood@gmail.com)
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * AboutDialog.java
- *
- * <p>This class provides a simple about dialog box with application version
- * information and a link to visit my source repository on GitHub.
- *
- *  @author     Philip J. Underwood
- *  @email      philjunderwood@gmail.com
+ *  @author     Jeremy Williamson
  */
 package hopfieldhexpattern.auxViews;
 
@@ -72,10 +50,10 @@ public class AboutDialog extends javax.swing.JDialog {
 
         mLabelVersionNumber.setText("version 1.0");
 
-        mLabelVersionDate.setText("29 October 2015");
+        mLabelVersionDate.setText("6 January 2016");
 
         mLabelAuthorName.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
-        mLabelAuthorName.setText("<html><body>Copyright (C) 2015 Jeremy Williamson</html></body>");
+        mLabelAuthorName.setText("<html><body>Copyright (C) 2016 Jeremy Williamson</html></body>");
 
         mLabelAuthorURL.setForeground(java.awt.Color.blue);
         mLabelAuthorURL.setText("https://github.com/quartermeat/HopfieldHexPattern");

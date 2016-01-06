@@ -82,7 +82,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="mLabelVersionDate">
       <Properties>
-        <Property name="text" type="java.lang.String" value="29 October 2015"/>
+        <Property name="text" type="java.lang.String" value="6 January 2016"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="mLabelAuthorName">
@@ -90,7 +90,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Ubuntu" size="10" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;body&gt;Copyright (C) 2015 Jeremy Williamson&lt;/html&gt;&lt;/body&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;body&gt;Copyright (C) 2016 Jeremy Williamson&lt;/html&gt;&lt;/body&gt;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="mLabelAuthorURL">

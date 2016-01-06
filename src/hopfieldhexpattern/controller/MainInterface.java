@@ -1,29 +1,6 @@
-/*
- *   GameOfLife - An implementation of John H. Conway's cellular automaton.
- *   Copyright (C) 2015  Philip J. Underwood (philjunderwood@gmail.com)
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * MainInterface.java
- *
- * <p>This class creates the main user interface for the Game of Life.
- *
- *  @author     Philip J. Underwood
- *  @email      philjunderwood@gmail.com
- */
 package hopfieldhexpattern.controller;
 
+import com.heatonresearch.book.introneuralnet.neural.hopfield.HopfieldNetwork;
 import hopfieldhexpattern.model.*;
 import hopfieldhexpattern.auxViews.*;
 import java.awt.Point;
@@ -34,6 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+/*
+ *  @author     Jeremy Williamson
+ */
 public final class MainInterface extends JFrame {
 
     //finals
@@ -44,11 +24,12 @@ public final class MainInterface extends JFrame {
     private final Thread thread;
 
     private final HexNode[][] hexNodeGrid;
-    
-    //non-final members
-    private boolean[][] booleanGrid;
 
-    //MainInterface constructor
+    private boolean[] booleanGrid;
+
+    private final HopfieldNetwork hopfieldNetwork;
+
+//MainInterface constructor
     public MainInterface() {
 
         mAboutDialog = new AboutDialog(this, true);
@@ -57,7 +38,12 @@ public final class MainInterface extends JFrame {
         graphics = new GameGraphics(this);
         thread = new Thread(new MainThread(this));
 
+        booleanGrid = new boolean[Parameters.getGridSize() * Parameters.getGridSize()];
+
         hexNodeGrid = new HexNode[Parameters.getGridSize()][Parameters.getGridSize()];
+        initializeHexNodeGrid();
+
+        hopfieldNetwork = new HopfieldNetwork(Parameters.getGridSize() * Parameters.getGridSize());
 
         initComponents();
 
@@ -66,10 +52,10 @@ public final class MainInterface extends JFrame {
         ImageIcon img = new ImageIcon("icon.png");
         setIconImage(img.getImage());
 
-        optionsMenu.setEnabled(true);
-        clearMenu.setEnabled(true);
-        randomMenu.setEnabled(true);
-        startMenu.setEnabled(true);
+        optionsMenu.setEnabled(false);
+        clearMenu.setEnabled(false);
+        randomMenu.setEnabled(false);
+        startMenu.setEnabled(false);
         stopMenu.setEnabled(false);
 
         graphics.drawGridPanel();
@@ -124,22 +110,45 @@ public final class MainInterface extends JFrame {
     public GameGraphics getGameGraphics() {
         return graphics;
     }//end getGameGraphics()
-    
-    public void setBooleanGrid(){
-        for(int i = 0; i < Parameters.getGridSize();i++){
-            for(int j = 0; j < Parameters.getGridSize(); j++){
-                booleanGrid[i][j] = hexNodeGrid[i][j].isDrawn();
+
+    public void initializeBooleanGrid() {
+        int index = 0;
+        for (int i = 0; i < Parameters.getGridSize(); i++) {
+            for (int j = 0; j < Parameters.getGridSize(); j++) {
+                booleanGrid[index++] = hexNodeGrid[i][j].isDrawn();
             }//end for
         }//end for
-    }//end setBooleanGrid
+    }//end initializeBooleanGrid
+
+    public void initializeHexNodeGrid() {
+        //array of hexagon corner coordinates
+        int[] mCornersX = new int[6];
+        int[] mCornersY = new int[6];
+
+        //hexagon grid cell metrics
+        HexGridCell cellMetrics = new HexGridCell(Parameters.getPixelSize() / 2);
+        
+        //load new hexNodes in each grid location
+        for (int i = 0; i < Parameters.getGridSize(); ++i) {
+            for (int j = 0; j < Parameters.getGridSize(); ++j) {
+                cellMetrics.setCellIndex(i, j);
+                cellMetrics.computeCorners(mCornersX, mCornersY);
+
+                hexNodeGrid[i][j] = new HexNode(cellMetrics, this);
+            }//end for
+        }//end for
+    }//end initializeHexNodeGrid
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
         gridPanel = new GridPanel(graphics.getOffscreenImage());
         controlPanel = new javax.swing.JPanel();
+        trainButton = new javax.swing.JButton();
+        presentButton = new javax.swing.JButton();
+        clearMatrixButton = new javax.swing.JButton();
+        clearGridButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         menuAbout = new javax.swing.JMenuItem();
@@ -187,15 +196,59 @@ public final class MainInterface extends JFrame {
 
         controlPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        trainButton.setText("Train Current Network");
+        trainButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                trainButtonActionPerformed(evt);
+            }
+        });
+
+        presentButton.setText("Present Network");
+        presentButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                presentButtonActionPerformed(evt);
+            }
+        });
+
+        clearMatrixButton.setText("Clear Matrix");
+        clearMatrixButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMatrixButtonActionPerformed(evt);
+            }
+        });
+
+        clearGridButton.setText("Clear Grid");
+        clearGridButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearGridButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
         controlPanel.setLayout(controlPanelLayout);
         controlPanelLayout.setHorizontalGroup(
             controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
+                .addContainerGap(22, Short.MAX_VALUE)
+                .addGroup(controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(presentButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(trainButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(clearMatrixButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(clearGridButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(21, 21, 21))
         );
         controlPanelLayout.setVerticalGroup(
             controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 905, Short.MAX_VALUE)
+            .addGroup(controlPanelLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(trainButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(presentButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(clearGridButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(clearMatrixButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         fileMenu.setText("File");
@@ -326,8 +379,16 @@ public final class MainInterface extends JFrame {
     }//GEN-LAST:event_optionsMenuActionPerformed
 
     private void clearMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuActionPerformed
+        
+        for (int i = 0; i < Parameters.getGridSize(); ++i) {
+            for (int j = 0; j < Parameters.getGridSize(); ++j) {
+                hexNodeGrid[i][j].erase();
+            }//end for
+        }//end for
+        initializeHexNodeGrid();
         graphics.drawGridPanel();
         gridPanel.repaint();
+        
     }//GEN-LAST:event_clearMenuActionPerformed
 
     private void randomMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_randomMenuActionPerformed
@@ -345,13 +406,10 @@ public final class MainInterface extends JFrame {
             Point mousePoint = gridPanel.getMousePosition();
 
             try {
-                HexNode newHexNode = new HexNode(this, mousePoint);
-                if (hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] == null) {
-                    hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] = newHexNode;
-
+                HexNode newHexNode = new HexNode(mousePoint, this);
+                if (!hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()].isDrawn()) {
                     hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()].draw();
                     gridPanel.repaint();
-
                 }//end if
             } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
                 //TODO: TRY TO STOP THIS FROM HAPPENING
@@ -366,13 +424,10 @@ public final class MainInterface extends JFrame {
             Point mousePoint = gridPanel.getMousePosition();
 
             try {
-                HexNode newHexNode = new HexNode(this, mousePoint);
-                if (hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] == null) {
-                    hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()] = newHexNode;
-
+                HexNode newHexNode = new HexNode(mousePoint, this);
+                if (!hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()].isDrawn()) {
                     hexNodeGrid[newHexNode.getIndexI()][newHexNode.getIndexJ()].draw();
                     gridPanel.repaint();
-
                 }//end if
             } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
                 //TODO: TRY TO STOP THIS FROM HAPPENING
@@ -385,8 +440,56 @@ public final class MainInterface extends JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_gridPanelMouseReleased
 
+    private void trainButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_trainButtonActionPerformed
+        
+        initializeBooleanGrid();
+        hopfieldNetwork.train(booleanGrid);
+        
+    }//GEN-LAST:event_trainButtonActionPerformed
+
+    private void presentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presentButtonActionPerformed
+        
+        booleanGrid = hopfieldNetwork.present(booleanGrid);
+        
+        int index = 0;
+        for (int i = 0; i < Parameters.getGridSize(); ++i) {
+            for (int j = 0; j < Parameters.getGridSize(); ++j) {
+                hexNodeGrid[i][j].erase();
+                if(booleanGrid[index++]){
+                    hexNodeGrid[i][j].draw();
+                }//end if
+            }//end for
+        }//end for
+        gridPanel.repaint();       
+        
+    }//GEN-LAST:event_presentButtonActionPerformed
+
+    private void clearMatrixButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMatrixButtonActionPerformed
+        
+        hopfieldNetwork.getMatrix().clear();
+        initializeHexNodeGrid();
+        initializeBooleanGrid();        
+        graphics.drawGridPanel();
+        gridPanel.repaint();
+        
+    }//GEN-LAST:event_clearMatrixButtonActionPerformed
+
+    private void clearGridButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearGridButtonActionPerformed
+        
+        for (int i = 0; i < Parameters.getGridSize(); ++i) {
+            for (int j = 0; j < Parameters.getGridSize(); ++j) {
+                hexNodeGrid[i][j].erase();
+            }//end for
+        }//end for
+        initializeHexNodeGrid();
+        graphics.drawGridPanel();
+        gridPanel.repaint();
+        
+    }//GEN-LAST:event_clearGridButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton clearGridButton;
+    private javax.swing.JButton clearMatrixButton;
     private javax.swing.JMenuItem clearMenu;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JMenuItem exitMenu;
@@ -398,10 +501,12 @@ public final class MainInterface extends JFrame {
     private javax.swing.JMenuItem menuAbout;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem optionsMenu;
+    private javax.swing.JButton presentButton;
     private javax.swing.JMenuItem randomMenu;
     private javax.swing.JMenu runMenu;
     private javax.swing.JMenuItem startMenu;
     private javax.swing.JMenuItem stopMenu;
+    private javax.swing.JButton trainButton;
     // End of variables declaration//GEN-END:variables
 
 }//end MainInterface

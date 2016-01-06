@@ -8,6 +8,7 @@ package hopfieldhexpattern.model;
 import java.awt.Color;
 import hopfieldhexpattern.controller.*;
 import java.awt.Point;
+import javax.swing.JFrame;
 
 /**
  *
@@ -23,31 +24,44 @@ public class HexNode {
 
     //private node color;
     private final Color color;
-
-    //private node location;
-    private final Point location;
     
     private boolean isDrawn;
 
-    public HexNode(MainInterface newWindow, Point newLocation) {
+    public HexNode(Point newLocation, MainInterface newWindow){
+        
+        isDrawn = false;
+        
+        color = Color.BLUE;
+        
+        cellMetrics = new HexGridCell(Parameters.getPixelSize() / 2);
+        cellMetrics.setCellByPoint(newLocation.x, newLocation.y);
+        
+        //array of hexagon corner coordinates
+        cellCornersX = new int[6];
+        cellCornersY = new int[6];
+
+        cellMetrics.computeCorners(cellCornersX, cellCornersY);
+
+        graphics = newWindow.getGameGraphics();
+    }//end constructor
+    
+    public HexNode(HexGridCell newCellMetrics, MainInterface newWindow) {
 
         isDrawn = false;
         
         color = Color.BLUE;
 
-        location = newLocation;
-
-        cellMetrics = new HexGridCell(Parameters.getPixelSize() / 2);
+        cellMetrics = newCellMetrics;
+        
         //array of hexagon corner coordinates
         cellCornersX = new int[6];
         cellCornersY = new int[6];
 
-        cellMetrics.setCellByPoint(location.x, location.y);
         cellMetrics.computeCorners(cellCornersX, cellCornersY);
 
         graphics = newWindow.getGameGraphics();
 
-    }//end organism
+    }//end constructor
     
     public int getIndexI(){
         return cellMetrics.getIndexI();
@@ -59,11 +73,15 @@ public class HexNode {
     
     public boolean isDrawn(){
         return isDrawn;
-    }
+    }//end isDrawn()
+    
+    public void erase(){
+        isDrawn = false;
+    }//end erase()
 
     public void draw() {
 
-        if (location != null) {
+        if (!isDrawn) {
 
             graphics.getOffscreenImageGraphics().setColor(color);
             graphics.getOffscreenImageGraphics().fillPolygon(cellCornersX, cellCornersY, 6);
