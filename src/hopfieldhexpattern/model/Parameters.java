@@ -10,11 +10,11 @@ import java.awt.Window;
 public class Parameters {
 
     //how big each hexagon should be
-    private static int pixelSize = 10;
+    private final static int pixelSize = 10;
 
     //used to calculate how big the image should be
-    private static HexGridCell gridCell = new HexGridCell(pixelSize / 2);
-    private static int gridSize = 100;
+    private final static HexGridCell gridCell = new HexGridCell(pixelSize / 2);
+    private final static int gridSize = 100;
 
     //really want to make this a formula so sizes can be changed dynamically, but haven't gotten it to work quite right
     private static int mImageSizeX = 705;
